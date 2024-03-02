@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import AudioTrack from './AudioTrack'
-
-const TrackHandler = React.forwardRef(({files,currentTrack},ref) => {
+import './TrackHandler.css'
+const TrackHandler = React.forwardRef(({files,currentTrack,liveStatus},ref) => {
  
 
   useEffect(()=>{
-   console.log(currentTrack)
-  },[currentTrack])
+  },[currentTrack,ref])
   return (
-    <div>
+    <div className='trackLine'>
        {
         files.map((file,i)=>{
            if(i===currentTrack?.index){
-            return <AudioTrack ref={ref} currentTrack={currentTrack} activeStatus={true}/>
+            return <AudioTrack file={file} liveStatus={liveStatus}  ref={ref} index={i} currentTrack={currentTrack} activeStatus={true}/>
            }else{
-            return <AudioTrack ref={ref} currentTrack={currentTrack} activeStatus={false}/>
+            return <AudioTrack file={file} liveStatus={liveStatus} ref={ref} index={i} currentTrack={currentTrack} activeStatus={false}/>
            }
         })
        }

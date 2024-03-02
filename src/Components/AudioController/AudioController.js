@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState,forwardRef } from 'react'
 
 // const audioURl="http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"
 
-const AudioController = forwardRef(({currentTrack},ref) => {
+const AudioController = forwardRef(({currentTrack,setAudioSrc},ref) => {
     const [fileUrl,setFileUrl]=useState()
     const stopAudio=()=>{
           ref?.current?.pause()
@@ -16,15 +16,22 @@ const AudioController = forwardRef(({currentTrack},ref) => {
 
    useEffect(()=>{
     if(currentTrack?.src){
-        console.log(currentTrack?.src)
         const url = URL.createObjectURL(currentTrack?.src);
         setFileUrl(url)
     }
+    let aduio=ref.current
+    aduio.onended = function() {
+        setAudioSrc(currentTrack.index+1)
+    };
    },[currentTrack])
+
+   useEffect(()=>{
+    currentTrack?.index>0 && startAudio()
+   },[fileUrl])
+
   return (
     <div>
-         <audio ref={ref}>
-            <source src={fileUrl} />
+         <audio ref={ref} src={fileUrl} type="audio/mpeg">
          </audio>
 
          <button onClick={startAudio}>Start</button>

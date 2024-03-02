@@ -1,37 +1,48 @@
-import React, { useEffect, useRef, useState } from 'react'
-
-const AudioTrack = React.forwardRef(({activeStatus,currentTrack},ref) => {
+import React, { useContext, useEffect, useRef, useState } from 'react'
+import './TrackHandler.css'
+import {audioFunctionsContext} from '../../App'
+const AudioTrack = React.forwardRef(({activeStatus,currentTrack,index,liveStatus,file},ref) => {
   const audioTrackTimer=useRef()
   const audioTrackLineRef=useRef()
   const trackRef=useRef()
   const audioPlayerRef=ref['audioPlayerRef']
-  const [cords, setCoords] = React.useState({})
+  const [cords, setCoords] = React.useState()
   const [timelineTracker,setTimelineTracker]= React.useState({xValue:0,xPercent:0})
   const [blockDimensions,setDimensions]=useState()
- 
-
+  const {setAudioSrc}=useContext(audioFunctionsContext)
   const onMouseMove = ({ nativeEvent }) => {
     const { clientX } = nativeEvent
-    let x=clientX - blockDimensions.left
-    let xPercent=((x*100)/blockDimensions.width).toFixed(0)
-    x<blockDimensions.width && setCoords({xValue:x,xPercent:xPercent})
-
+    let clientRect = audioTrackLineRef.current.getBoundingClientRect(); 
+    let x=clientX - clientRect.left
+    let xPercent=((x*100)/clientRect.width).toFixed(0)
+    x<clientRect.width && setCoords({xValue:x,xPercent:xPercent})
   }
 
   const updateAudioTimeline=()=>{
-    audioPlayerRef.current.currentTime=((audioPlayerRef.current.duration*cords.xPercent)/100).toFixed(0)
-    setTimelineTracker({xValue:cords.x,xPercent:cords.xPercent})
-
+    if(activeStatus){
+      audioPlayerRef.current.currentTime=((audioPlayerRef.current.duration*cords.xPercent)/100).toFixed(0)
+      setTimelineTracker({xValue:cords.x,xPercent:cords.xPercent})
+    }else{
+        setTimelineTracker({xValue:cords.xValue,xPercent:cords.xPercent})
+        setAudioSrc(index)
+    }
  }
 
 
 useEffect(()=>{
       let clientRect = audioTrackLineRef.current.getBoundingClientRect(); 
       setDimensions({left:clientRect.left,width:clientRect.width})
-    if(activeStatus){
+    if(activeStatus && liveStatus?.isPlaying && audioPlayerRef.current){
+      console.log('cords',cords)
+      if(cords?.xPercent){
+        setTimeout(()=>{
+          audioPlayerRef.current.currentTime=((audioPlayerRef.current.duration*cords.xPercent)/100).toFixed(0)
+        },500)
+      }
       audioTrackTimer.current=setInterval(()=>{
+
         let percentage=((audioPlayerRef.current.currentTime*100)/audioPlayerRef.current.duration).toFixed(0)
-        let x=((percentage*blockDimensions.width)/100).toFixed(0)
+        let x=((percentage*clientRect.width)/100).toFixed(0)
         setTimelineTracker({xValue:x,xPercent:percentage})
         if(percentage>99){
            clearInterval(audioTrackTimer.current)
@@ -41,21 +52,22 @@ useEffect(()=>{
     }else{
       clearInterval(audioTrackTimer.current)
     }
-    console.log(activeStatus)
 
     return ()=>{
       clearInterval(audioTrackTimer.current)
     }
 
-},[activeStatus])
+},[activeStatus,liveStatus])
   return (
-    <div className='audioTrack' onClick={updateAudioTimeline} ref={audioTrackLineRef} onMouseMove={onMouseMove}>
+    <div className='audioTrack' style={{width:(file?.size/10000)+'px' || '100px'}} onClick={updateAudioTimeline} ref={audioTrackLineRef} onMouseMove={onMouseMove} onMouseLeave={()=>setCoords(null)}>
       {
         activeStatus &&  <div style={{left:`${timelineTracker.xValue}px`}} ref={trackRef} className='track_timeliner'></div>
 
       }
 
-      <div style={{left:`${cords.xValue}px`}} ref={trackRef} className='track_follower'></div>
+     {
+      cords && <div style={{left:`${cords.xValue}px`}} ref={trackRef} className='track_follower'></div>
+     } 
    </div>
 
   )

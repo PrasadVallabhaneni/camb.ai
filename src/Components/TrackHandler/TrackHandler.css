@@ -1,0 +1,33 @@
+.trackLine {
+    width: 95%;
+    margin: 2%;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+}
+
+.audioTrack {
+    flex-shrink: 0;
+    height: 100px;
+    border: 1px solid green;
+    border-radius: 5px;
+    background-color: greenyellow;
+    margin: 0px 10px;
+    display: flex;
+}
+
+.track_follower {
+    position: relative;
+    width: 0px;
+    height: 100%;
+    border: 1px solid red;
+    opacity: 0.3;
+}
+
+.track_timeliner {
+    position: relative;
+    width: 0px;
+    height: 100%;
+    border: 1px solid red;
+}

@@ -17,6 +17,7 @@ const FileHandler = ({files,setFiles}) => {
         childNodes.forEach((el)=>{
             updatedArray.push(el.id)
         })
+        console.log(updatedArray)
         setResizeTrack(updatedArray)
     })
   },[])
@@ -27,6 +28,7 @@ const FileHandler = ({files,setFiles}) => {
          resizeTrack.forEach((index)=>{
               updatedArray.push(files[index])
          })
+         console.log(updatedArray)
          setFiles(updatedArray)
     }
   },[resizeTrack])
