@@ -1,37 +1,33 @@
-import React, { useEffect, useRef } from 'react'
-const audioURl="http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"
+import React, { useEffect, useRef, useState } from 'react'
+import FileHandler from './Components/FileHandler/FileHandler'
+import AudioController from './Components/AudioController/AudioController'
+import TrackHandler from './Components/TrackHandler/TrackHandler'
+
 const App = () => {
-    const audioPlayerRef=useRef()
-    const audioTrackLineRef=useRef()
-    const trackRef=useRef()
-    const [cords, setCoords] = React.useState({})
-    const [timelineTracker,setTimelineTracker]= React.useState(0)
+  const [files,setFiles]=useState([])
+  const audioPlayerRef=useRef()
+  const [currentTrack,setCurrentTrack]=useState()
 
-  const onMouseMove = ({ nativeEvent }) => {
-    const { clientX } = nativeEvent
-    let clientRect = audioTrackLineRef.current.getBoundingClientRect(); 
-    let x=clientX - clientRect.left
-    let xPercent=((x*100)/clientRect.width).toFixed(0)
-    x<clientRect.width && setCoords({xValue:x,xPercent:xPercent})
+  const setAudioSrc=(index=null)=>{
+    if(index==null){
+      setCurrentTrack({src:files[0],index:0})
+    }else if(Number.isInteger(index) && index>=0){
+      setCurrentTrack({src:files[index],index})
+    }
+  
+ } 
 
-    console.log(audioPlayerRef)
-  }
-//   currentTime duration
-useEffect(()=>{
-console.log(audioPlayerRef.current.currentTime)
-},[audioPlayerRef?.current?.currentTime])
+
+ useEffect(()=>{
+  files.length && setAudioSrc()
+ },[files])
+
  
   return (
-    <div className='parent_div'>
-      <audio controls ref={audioPlayerRef}>
-          <source src={audioURl} type="audio/mpeg"/>
-      </audio>
-        <div className='audioTrack' ref={audioTrackLineRef} onMouseMove={onMouseMove}>
-                         
-                      <div style={{left:`${cords.xValue}px`}} ref={trackRef} className='track_follower'></div>
-        </div>
-
-
+    <div>
+        <FileHandler files={files} setFiles={setFiles}/>
+        <AudioController currentTrack={currentTrack} ref={audioPlayerRef}/>
+        <TrackHandler ref={{audioPlayerRef:audioPlayerRef}} files={files} currentTrack={currentTrack}/>
     </div>
   )
 }

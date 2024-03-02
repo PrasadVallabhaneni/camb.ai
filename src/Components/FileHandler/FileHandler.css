@@ -1,0 +1,31 @@
+.audioFileController {
+    width: 400px;
+    height: 300px;
+    border: 1px solid rgba(61, 60, 60, 0.457);
+    border-radius: 5px;
+    padding: 2%;
+    margin: 0px auto;
+}
+
+#audioFileInput {
+    display: none;
+    width: 90%;
+}
+
+.audioFileInputLabel {
+    margin: 2% 5%;
+    border: 1px solid rgba(61, 60, 60, 0.457);
+    border-radius: 5px;
+}
+
+.fileList{
+    margin: 5% 2%;
+    
+}
+.audioFileCard{
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 5px;
+    cursor: grabbing;
+}
