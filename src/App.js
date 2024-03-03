@@ -13,21 +13,30 @@ const App = () => {
   const audioPlayerRef = useRef();
   const [currentTrack, setCurrentTrack] = useState();
   const [liveStatus, setLiveStatus] = useState();
+
+  /**
+   * The function `setAudioSrc` sets the audio source based on the provided index or defaults to the
+   * first file in the array.
+   * @param [index=null] - The `index` parameter in the `setAudioSrc` function is used to specify the
+   * index of the audio file in the `files` array that you want to set as the current track. If no
+   * index is provided (or if it is `null`), the function will default to setting the
+   */
   const setAudioSrc = (index = null) => {
-    console.log(files);
     if (index == null) {
       setCurrentTrack({src: files[0], index: 0});
     } else if (Number.isInteger(index) && index >= 0 && index < files.length) {
       setCurrentTrack({src: files[index], index});
     }
-
-    console.log(audioPlayerRef);
   };
 
+  /* The `useEffect(() => { files.length && setAudioSrc(); }, [files]);` hook in the React component is
+  responsible for setting the audio source when the `files` state changes. */
   useEffect(() => {
     files.length && setAudioSrc();
   }, [files]);
 
+  /* The `useEffect` hook  provided is setting up event listeners for the `onplay` and `onpause`
+  events of the audio player referenced by `audioPlayerRef`. */
   useEffect(() => {
     audioPlayerRef.current.onplay = () => {
       setLiveStatus({isPlaying: true});
@@ -36,7 +45,6 @@ const App = () => {
       setLiveStatus({isPlaying: false});
     };
   }, []);
-  
 
   return (
     <div className="parent_div">

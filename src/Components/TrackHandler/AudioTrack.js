@@ -8,8 +8,13 @@ const AudioTrack = React.forwardRef(({activeStatus, currentTrack, index, liveSta
   const audioPlayerRef = ref["audioPlayerRef"];
   const [cords, setCoords] = React.useState();
   const [timelineTracker, setTimelineTracker] = React.useState({xValue: 0, xPercent: 0});
-  const [blockDimensions, setDimensions] = useState();
   const {setAudioSrc} = useContext(audioFunctionsContext);
+
+
+  /**
+   * The onMouseMove function calculates the horizontal position of the mouse relative to a specific
+   * element and updates the state with the calculated values.
+   */
   const onMouseMove = ({nativeEvent}) => {
     const {clientX} = nativeEvent;
     let clientRect = audioTrackLineRef.current.getBoundingClientRect();
@@ -18,6 +23,10 @@ const AudioTrack = React.forwardRef(({activeStatus, currentTrack, index, liveSta
     x < clientRect.width && setCoords({xValue: x, xPercent: xPercent});
   };
 
+  /**
+   * The function `updateAudioTimeline` updates the audio player's timeline based on the current status
+   * and coordinates.
+   */
   const updateAudioTimeline = () => {
     if (activeStatus) {
       audioPlayerRef.current.currentTime = ((audioPlayerRef.current.duration * cords.xPercent) / 100).toFixed(0);
@@ -29,9 +38,12 @@ const AudioTrack = React.forwardRef(({activeStatus, currentTrack, index, liveSta
     }
   };
 
+  /* The `useEffect` hook in the provided code snippet is responsible for managing side effects in the
+  AudioTrack component based on changes to the `activeStatus` and `liveStatus` dependencies. */
   useEffect(() => {
     let clientRect = audioTrackLineRef.current.getBoundingClientRect();
-    setDimensions({left: clientRect.left, width: clientRect.width});
+   /* This block of code is responsible for updating the audio player's timeline based on certain
+   conditions. Here's a breakdown of what it does: */
     if (activeStatus && liveStatus?.isPlaying && audioPlayerRef.current) {
       console.log("cords", cords);
       if (timelineTracker?.skipTimeline) {

@@ -8,6 +8,7 @@ import {MdOutlineDeleteOutline} from "react-icons/md";
 import "./FileHandler.css";
 const FileHandler = ({files, setFiles}) => {
   const [resizeTrack, setResizeTrack] = useState([]);
+
   const handleUploadFile = (event) => {
     if (event?.target?.files?.length) {
       let data = [...files];
@@ -22,6 +23,8 @@ const FileHandler = ({files, setFiles}) => {
     setFiles(data);
   };
 
+  /* This `useEffect` hook is setting up a drag-and-drop functionality using the `dragula` library.
+  Here's a breakdown of what it's doing: */
   useEffect(() => {
     var drake = dragula([document.querySelector("#dragula")], {mirrorContainer: document.querySelector("#drop-target")});
     drake.on("drop", (el, target, source, sibling) => {
@@ -30,10 +33,18 @@ const FileHandler = ({files, setFiles}) => {
       childNodes.forEach((el) => {
         updatedArray.push(el.id);
       });
+      /* `setResizeTrack(updatedArray);` is updating the state variable `resizeTrack` with the new array
+`updatedArray`. This is being done inside the `dragula` library's `drop` event handler, where the
+order of the files is being updated based on the drag-and-drop action. The `resizeTrack` state is
+used to keep track of the updated order of files after they have been rearranged through
+drag-and-drop. */
       setResizeTrack(updatedArray);
     });
   }, []);
 
+  /* This `useEffect` hook is monitoring the `resizeTrack` state variable for changes. When
+  `resizeTrack` changes (i.e., when the order of files is updated through drag-and-drop), this
+  effect is triggered. */
   useEffect(() => {
     if (resizeTrack.length) {
       let updatedArray = [];
