@@ -1,18 +1,20 @@
 .trackLine {
-    width: 95%;
-    margin: 2%;
-    padding: 10px;
+    width: 100%;
+    margin: 0%;
+    padding: 2% 0%;
     display: flex;
     flex-direction: row;
     overflow-x: scroll;
+    height: 150px;
+    z-index: 10;
 }
 
 .audioTrack {
     flex-shrink: 0;
-    height: 100px;
-    border: 1px solid green;
+    height: 120px;
+    border: 2px solid #2A8F53;
     border-radius: 5px;
-    background-color: greenyellow;
+    background-color: #32B068;
     margin: 0px 10px;
     display: flex;
 }
@@ -21,13 +23,24 @@
     position: relative;
     width: 0px;
     height: 100%;
-    border: 1px solid red;
-    opacity: 0.3;
+    border: 1px solid #FCCC2F;
+    opacity: 0.5;
 }
 
 .track_timeliner {
     position: relative;
     width: 0px;
     height: 100%;
-    border: 1px solid red;
+    border: 1px solid #FCCC2F;
+    transition: all 0.1s ease-out;
+    top: -1px;
+}
+.track_timeliner_tag{
+    font-size: 12px;
+    color: rgb(179, 176, 176);
+    position: relative;
+    top: 125px;
+    width: 100%;
+    white-space: wrap;
+    word-wrap: break-word;
 }

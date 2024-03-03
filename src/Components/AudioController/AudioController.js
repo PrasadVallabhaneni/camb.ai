@@ -1,43 +1,50 @@
+import React, {useEffect, useState, forwardRef} from "react";
+import "./AudioController.css";
+import {FaPlay} from "react-icons/fa";
+import {GiPauseButton} from "react-icons/gi";
+import {FaBackward} from "react-icons/fa6";
+import {FaForward} from "react-icons/fa";
 
-import React, { useEffect, useRef, useState,forwardRef } from 'react'
+const AudioController = forwardRef(({currentTrack, liveStatus, files}, ref) => {
+  const [fileUrl, setFileUrl] = useState();
+  const stopAudio = () => {
+    ref?.current?.pause();
+  };
 
-// const audioURl="http://commondatastorage.googleapis.com/codeskulptor-demos/DDR_assets/Kangaroo_MusiQue_-_The_Neverwritten_Role_Playing_Game.mp3"
+  const startAudio = () => {
+    files?.length && ref?.current?.play();
+  };
 
-const AudioController = forwardRef(({currentTrack,setAudioSrc},ref) => {
-    const [fileUrl,setFileUrl]=useState()
-    const stopAudio=()=>{
-          ref?.current?.pause()
+  useEffect(() => {
+    if (currentTrack?.src) {
+      const url = URL.createObjectURL(currentTrack?.src);
+
+      setFileUrl(url);
     }
+  }, [currentTrack]);
 
-    const startAudio=()=>{
-        console.log(ref)
-        ref?.current?.play()
-    }
+  useEffect(() => {
+    files?.length > 1 && startAudio();
+    console.log(fileUrl);
+  }, [fileUrl]);
 
-   useEffect(()=>{
-    if(currentTrack?.src){
-        const url = URL.createObjectURL(currentTrack?.src);
-        setFileUrl(url)
-    }
-    let aduio=ref.current
-    aduio.onended = function() {
-        setAudioSrc(currentTrack.index+1)
-    };
-   },[currentTrack])
-
-   useEffect(()=>{
-    currentTrack?.index>0 && startAudio()
-   },[fileUrl])
+  useEffect(() => {
+    !files.length && stopAudio();
+  }, [files]);
 
   return (
-    <div>
-         <audio ref={ref} src={fileUrl} type="audio/mpeg">
-         </audio>
+    <div className="width_100 height_100" id="audio_player">
+      <audio ref={ref} src={fileUrl} type="audio/mpeg"></audio>
 
-         <button onClick={startAudio}>Start</button>
-         <button onClick={stopAudio}>Stop</button>
+      <div className="vis_gif"></div>
+
+      <div className="audio_controlls">
+        <FaBackward />
+        {liveStatus?.isPlaying ? <GiPauseButton onClick={stopAudio} /> : <FaPlay onClick={startAudio} />}
+        <FaForward />
+      </div>
     </div>
-  )
-})
+  );
+});
 
-export default AudioController
+export default AudioController;
